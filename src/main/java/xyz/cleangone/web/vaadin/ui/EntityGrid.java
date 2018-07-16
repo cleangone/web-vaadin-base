@@ -14,6 +14,7 @@ import xyz.cleangone.web.vaadin.util.CountingDataProvider;
 import xyz.cleangone.web.vaadin.util.MultiFieldFilter;
 import xyz.cleangone.web.vaadin.util.VaadinUtils;
 
+import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.util.Date;
 
@@ -51,19 +52,24 @@ public class EntityGrid<T extends BaseEntity> extends Grid<T>
             .setEditorComponent(new TextField(), setter);
     }
 
+    protected Column<T, Boolean> addBooleanColumn(EntityField entityField, ValueProvider<T, Boolean> valueProvider)
+    {
+        return addColumn(valueProvider)
+            .setId(entityField.getName())
+            .setCaption(entityField.getDisplayName());
+    }
 
-//    private void addBooleanColumn(
-//        Grid<User> grid, EntityField entityField, ValueProvider<User, Boolean> valueProvider, Setter<User, Boolean> setter)
-//    {
-//        grid.addColumn(valueProvider)
-//            .setId(entityField.getName()).setCaption(entityField.getDisplayName())
-//            .setEditorComponent(new CheckBox(), setter);
-//    }
+    protected Column<T, Boolean> addBooleanColumn(EntityField entityField, ValueProvider<T, Boolean> valueProvider, Setter<T, Boolean> setter)
+    {
+        return addBooleanColumn(entityField, valueProvider)
+            .setEditorComponent(new CheckBox(), setter);
+    }
 
     protected Grid.Column<T, Date> addDateColumn(EntityField entityField, ValueProvider<T, Date> valueProvider, DateFormat dateFormat)
     {
         return addDateColumn(entityField, valueProvider, dateFormat, 1);
     }
+
     protected Grid.Column<T, Date> addDateColumn(EntityField entityField, ValueProvider<T, Date> valueProvider, DateFormat dateFormat, int expandRatio)
     {
         return addColumn(valueProvider)
@@ -72,19 +78,30 @@ public class EntityGrid<T extends BaseEntity> extends Grid<T>
             .setExpandRatio(expandRatio);
     }
 
-//    private Grid.Column<T, BigDecimal> addBigDecimalColumn(EntityField entityField, ValueProvider<T, BigDecimal> valueProvider, int expandRatio)
+    protected Grid.Column<T, BigDecimal> addBigDecimalColumn(EntityField entityField, ValueProvider<T, BigDecimal> valueProvider)
+    {
+        return addBigDecimalColumn(entityField, valueProvider, 1);
+    }
+
+    protected Grid.Column<T, BigDecimal> addBigDecimalColumn(EntityField entityField, ValueProvider<T, BigDecimal> valueProvider, int expandRatio)
+    {
+        return addColumn(valueProvider)
+            .setId(entityField.getName()).setCaption(entityField.getDisplayName()).setExpandRatio(expandRatio);
+    }
+
+//    protected Component buildDeleteButton(T entity, String name)
 //    {
-//        return addColumn(valueProvider)
-//            .setId(entityField.getName()).setCaption(entityField.getDisplayName()).setExpandRatio(expandRatio);
+//        return createDeleteButton("Delete '" + name + "'", getUI(), new ConfirmDialog.Listener() {
+//            public void onClose(ConfirmDialog dialog) { if (dialog.isConfirmed()) { delete(entity); } }
+//        });
 //    }
 
-
-    protected Component buildDeleteButton(T entity, String name)
+    protected Button buildDeleteButton(T entity, String name)
     {
-        return createDeleteButton("Delete '" + name + "'", getUI(), new ConfirmDialog.Listener() {
-            public void onClose(ConfirmDialog dialog) { if (dialog.isConfirmed()) { delete(entity); } }
-        });
-    }
+        String entityName = entity.getClass().getSimpleName();
+        return (buildDeleteButton(entity,
+            "Delete " + entityName, "Confirm " + entityName + " Delete", "Delete " + entityName + " '" + name + "'?"));
+     }
 
     protected Button buildDeleteButton(T entity, String buttonDescription, String confirmDialogCaption, String deleteMsg)
     {
@@ -92,6 +109,11 @@ public class EntityGrid<T extends BaseEntity> extends Grid<T>
         addDeleteClickListener(entity, button, confirmDialogCaption, deleteMsg);
 
         return button;
+    }
+
+    protected Column<T, Button> addIconButtonColumn(ValueProvider<T, Button> componentProvider)
+    {
+        return addComponentColumn(componentProvider).setWidth(ICON_COL_WIDTH);
     }
 
     protected void addDeleteClickListener(T entity, Button button, String confirmDialogCaption, String deleteMsg)
