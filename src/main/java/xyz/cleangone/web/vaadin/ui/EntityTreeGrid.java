@@ -19,35 +19,34 @@ import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.util.Date;
 
-import static xyz.cleangone.web.vaadin.util.VaadinUtils.*;
 import static xyz.cleangone.web.vaadin.util.VaadinUtils.createDeleteButton;
 
-public class EntityGrid<T extends BaseEntity> extends Grid<T>
+public class EntityTreeGrid<T extends BaseEntity> extends TreeGrid<T>
 {
     protected final int ICON_COL_WIDTH = 80;
     protected Label countLabel = new Label();
 
-    protected Grid.Column<T, String> addColumn(EntityField entityField, ValueProvider<T, String> valueProvider)
+    protected Column<T, String> addColumn(EntityField entityField, ValueProvider<T, String> valueProvider)
     {
         return addColumn(entityField, valueProvider, 1);
     }
 
-    protected Grid.Column<T, String> addColumn(EntityField entityField, ValueProvider<T, String> valueProvider, int expandRatio)
+    protected Column<T, String> addColumn(EntityField entityField, ValueProvider<T, String> valueProvider, int expandRatio)
     {
         return addColumn(valueProvider)
             .setId(entityField.getName()).setCaption(entityField.getDisplayName()).setExpandRatio(expandRatio);
     }
 
-    protected Grid.Column<T, String> addSortColumn(EntityField entityField, ValueProvider<T, String> valueProvider, Setter<T, String> setter)
+    protected Column<T, String> addSortColumn(EntityField entityField, ValueProvider<T, String> valueProvider, Setter<T, String> setter)
     {
-        Grid.Column<T, String> col = addColumn(entityField, valueProvider, setter);
+        Column<T, String> col = addColumn(entityField, valueProvider, setter);
         sort(col);
 
         return col;
     }
 
 
-    protected Grid.Column<T, String> addColumn(EntityField entityField, ValueProvider<T, String> valueProvider, Setter<T, String> setter)
+    protected Column<T, String> addColumn(EntityField entityField, ValueProvider<T, String> valueProvider, Setter<T, String> setter)
     {
         return addColumn(entityField, valueProvider)
             .setEditorComponent(new TextField(), setter);
@@ -66,19 +65,19 @@ public class EntityGrid<T extends BaseEntity> extends Grid<T>
             .setEditorComponent(new CheckBox(), setter);
     }
 
-    protected Grid.Column<T, Date> addDateColumn(EntityField entityField, ValueProvider<T, Date> valueProvider, DateFormat dateFormat, SortDirection direction)
+    protected Column<T, Date> addDateColumn(EntityField entityField, ValueProvider<T, Date> valueProvider, DateFormat dateFormat, SortDirection direction)
     {
-        Grid.Column<T, Date> col = addDateColumn(entityField, valueProvider, dateFormat, 1);
+        Column<T, Date> col = addDateColumn(entityField, valueProvider, dateFormat, 1);
         sort(col, direction);
         return col;
     }
 
-    protected Grid.Column<T, Date> addDateColumn(EntityField entityField, ValueProvider<T, Date> valueProvider, DateFormat dateFormat)
+    protected Column<T, Date> addDateColumn(EntityField entityField, ValueProvider<T, Date> valueProvider, DateFormat dateFormat)
     {
         return addDateColumn(entityField, valueProvider, dateFormat, 1);
     }
 
-    protected Grid.Column<T, Date> addDateColumn(EntityField entityField, ValueProvider<T, Date> valueProvider, DateFormat dateFormat, int expandRatio)
+    protected Column<T, Date> addDateColumn(EntityField entityField, ValueProvider<T, Date> valueProvider, DateFormat dateFormat, int expandRatio)
     {
         return addColumn(valueProvider)
             .setId(entityField.getName()).setCaption(entityField.getDisplayName())
@@ -86,24 +85,16 @@ public class EntityGrid<T extends BaseEntity> extends Grid<T>
             .setExpandRatio(expandRatio);
     }
 
-    protected Grid.Column<T, BigDecimal> addBigDecimalColumn(EntityField entityField, ValueProvider<T, BigDecimal> valueProvider)
+    protected Column<T, BigDecimal> addBigDecimalColumn(EntityField entityField, ValueProvider<T, BigDecimal> valueProvider)
     {
         return addBigDecimalColumn(entityField, valueProvider, 1);
     }
 
-    protected Grid.Column<T, BigDecimal> addBigDecimalColumn(EntityField entityField, ValueProvider<T, BigDecimal> valueProvider, int expandRatio)
+    protected Column<T, BigDecimal> addBigDecimalColumn(EntityField entityField, ValueProvider<T, BigDecimal> valueProvider, int expandRatio)
     {
         return addColumn(valueProvider)
             .setId(entityField.getName()).setCaption(entityField.getDisplayName()).setExpandRatio(expandRatio);
     }
-
-//    protected Component buildDeleteButton(T entity, String name)
-//    {
-//        return createDeleteButton("Delete '" + name + "'", getUI(), new ConfirmDialog.Listener() {
-//            public void onClose(ConfirmDialog dialog) { if (dialog.isConfirmed()) { delete(entity); } }
-//        });
-//    }
-
 
     protected Column<T, LinkButton> addLinkButtonColumn(EntityField entityField, ValueProvider<T, LinkButton> valueProvider)
     {
